@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  accounts.api:
+    build:
+      context: ./BankMore.Accounts.Api
+    container_name: accounts.api
+    ports:
+      - "5001:80"
+    depends_on:
+      - rabbitmq
+
+  transfers.api:
+    build:
+      context: ./BankMore.Transfers.Api
+    container_name: transfers.api
+    ports:
+      - "5002:80"
+    depends_on:
+      - rabbitmq

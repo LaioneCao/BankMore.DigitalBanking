@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="BankMore.Accounts.Api/BankMore.Accounts.Api.csproj" Id="1405b685-c6f7-46c9-beb1-7574af43c0bd" />
+  <Project Path="BankMore.Transfers.Api/BankMore.Transfers.Api.csproj" Id="4cd8a6c5-2301-44c7-a545-f8662c8240d2" />
+</Solution>
