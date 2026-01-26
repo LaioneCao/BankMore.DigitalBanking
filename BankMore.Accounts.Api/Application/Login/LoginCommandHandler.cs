@@ -28,7 +28,6 @@ namespace BankMore.Accounts.Api.Application.Login
             if (!hasCpf && !hasNumero)
                 throw new UnauthorizedAccessException("Credenciais inválidas.");
 
-            // 1) Busca conta
             var conta = hasNumero
                 ? await _repo.GetByNumeroAsync(command.NumeroConta!.Value)
                 : await _repo.GetByCpfAsync(command.CPFTitular!);
@@ -36,12 +35,10 @@ namespace BankMore.Accounts.Api.Application.Login
             if (conta is null)
                 throw new UnauthorizedAccessException("Usuário não autorizado.");
 
-            // 2) Valida senha
             var ok = _hasher.Verify(command.Senha, conta.SenhaHash, conta.Salt);
             if (!ok)
                 throw new UnauthorizedAccessException("Usuário não autorizado.");
 
-            // 3) Gera token
             var token = _jwt.GenerateToken(conta.Id, conta.Numero);
 
             return new LoginResult

@@ -12,7 +12,6 @@ namespace BankMore.Transfers.Api.Infra
             using var conn = factory.CreateConnection();
             conn.Open();
 
-            // SQLite: execute 1 por vez ou tudo em um batch
             const string sql = @"
                                 CREATE TABLE IF NOT EXISTS transferencia (
                                   idtransferencia TEXT(37) PRIMARY KEY,

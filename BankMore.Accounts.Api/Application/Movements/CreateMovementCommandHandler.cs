@@ -21,14 +21,12 @@ namespace BankMore.Accounts.Api.Application.Movements
 
         public async Task HandleAsync(Guid contaLogadaId, int contaLogadaNumero, CreateMovementCommand command)
         {
-            // Idempotência: se já processou essa requisição, retorna sucesso (204) de novo
             if (string.IsNullOrWhiteSpace(command.RequisitionId))
                 throw new BusinessException("Identificação da requisição é obrigatória.", "INVALID_VALUE");
 
             if (await _idemRepo.ExistsAsync(command.RequisitionId))
                 return;
 
-            // Resolve conta alvo
             Guid contaAlvoId;
             int contaAlvoNumero;
 
@@ -55,11 +53,9 @@ namespace BankMore.Accounts.Api.Application.Movements
             if (tipo is not ("C" or "D"))
                 throw new BusinessException("Tipo de movimento inválido. Use 'C' ou 'D'.", "INVALID_TYPE");
 
-            // Se conta alvo é diferente da conta logada, só permite CRÉDITO
             if (contaAlvoNumero != contaLogadaNumero && tipo != "C")
                 throw new BusinessException("Apenas crédito é permitido para movimentação em conta diferente do usuário logado.", "INVALID_TYPE");
 
-            // Conta alvo precisa estar ativa
             var contaParaStatus = contaAlvoNumero == contaLogadaNumero
                 ? await _contaRepo.GetByIdAsync(contaLogadaId)
                 : await _contaRepo.GetByNumeroAsync(contaAlvoNumero);
@@ -70,10 +66,8 @@ namespace BankMore.Accounts.Api.Application.Movements
             if (!contaParaStatus.Ativa)
                 throw new BusinessException("Conta corrente inativa.", "INACTIVE_ACCOUNT");
 
-            // Persistir movimento
             await _movRepo.AddAsync(contaAlvoId, tipo, command.Valor, DateTime.UtcNow);
 
-            // Registrar idempotência (resultado pode ser vazio, pois 204)
             var reqJson = JsonSerializer.Serialize(command);
             await _idemRepo.SaveAsync(command.RequisitionId, reqJson, "NO_CONTENT");
         }

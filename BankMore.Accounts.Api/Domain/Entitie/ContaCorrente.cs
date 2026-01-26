@@ -58,13 +58,11 @@ public class ContaCorrente
         if (cpf.Length != 11)
             return false;
 
-        // Rejeita CPFs com todos os dígitos iguais
         if (cpf.Distinct().Count() == 1)
             return false;
 
         var numeros = cpf.Select(c => int.Parse(c.ToString())).ToArray();
 
-        // Primeiro dígito verificador
         var soma = 0;
         for (var i = 0; i < 9; i++)
             soma += numeros[i] * (10 - i);
@@ -75,7 +73,6 @@ public class ContaCorrente
         if (numeros[9] != digito1)
             return false;
 
-        // Segundo dígito verificador
         soma = 0;
         for (var i = 0; i < 10; i++)
             soma += numeros[i] * (11 - i);

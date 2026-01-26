@@ -49,7 +49,6 @@ namespace BankMore.Transfers.Api.Application.CreateTransfer
                 throw;
             }
 
-            // 4) persistir
             var transferId = Guid.NewGuid();
             await _repo.AddAsync(transferId, contaOrigemId, Guid.Empty, command.Valor, DateTime.UtcNow);
 

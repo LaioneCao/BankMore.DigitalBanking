@@ -16,22 +16,20 @@ namespace BankMore.Accounts.Api.Application.CloseAccount
 
         public async Task HandleAsync(Guid contaId, CloseAccountCommand command)
         {
-            // 1) Conta precisa existir
+
             var conta = await _repo.GetByIdAsync(contaId);
             if (conta is null)
                 throw new BusinessException("Conta corrente inválida.", "INVALID_ACCOUNT");
 
-            // 2) Validar senha
             var ok = _hasher.Verify(command.Senha, conta.SenhaHash, conta.Salt);
             if (!ok)
                 throw new UnauthorizedAccessException("Usuário não autorizado.");
 
-            // 3) Inativar
             await _repo.InativarAsync(contaId);
         }
     }
 
-    // Exception simples de negócio pra mapear type/mensagem
+
     public sealed class BusinessException : Exception
     {
         public string Type { get; }

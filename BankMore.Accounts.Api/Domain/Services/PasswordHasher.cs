@@ -10,11 +10,9 @@ namespace BankMore.Accounts.Api.Domain.Services
             if (string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException("Senha inválida.");
 
-            // Gera salt aleatório
             var saltBytes = RandomNumberGenerator.GetBytes(16);
             var salt = Convert.ToBase64String(saltBytes);
 
-            // Gera hash usando PBKDF2
             using var pbkdf2 = new Rfc2898DeriveBytes(
                 password,
                 saltBytes,
@@ -48,7 +46,6 @@ namespace BankMore.Accounts.Api.Domain.Services
             using var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 10000, HashAlgorithmName.SHA256);
             var computedHash = Convert.ToBase64String(pbkdf2.GetBytes(32));
 
-            // comparação segura
             return CryptographicOperations.FixedTimeEquals(
                 Convert.FromBase64String(storedHash),
                 Convert.FromBase64String(computedHash)

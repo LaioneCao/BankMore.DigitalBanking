@@ -52,9 +52,8 @@ namespace BankMore.Accounts.Api.Controllers
                 return Ok(movimentos);
             }
 
-            // Para evitar vazamento, só permite listar a própria conta
             if (numeroConta.Value != numeroLogado)
-                return Forbid(); // ou BadRequest, mas Forbid é mais correto
+                return Forbid();
 
             var conta = await contaRepo.GetByNumeroAsync(numeroConta.Value);
             if (conta is null)
@@ -64,17 +63,7 @@ namespace BankMore.Accounts.Api.Controllers
             return Ok(list);
         }
 
-        /// <summary>
-        /// Abre uma conta corrente.
-        /// </summary>
-        /// <remarks>
-        /// Regras:
-        /// - Valida CPF (regra oficial)
-        /// - Persiste conta corrente
-        /// Retornos:
-        /// - 201: conta criada (retorna numero da conta e id)
-        /// - 400: CPF inválido (INVALID_DOCUMENT) ou dados inconsistentes
-        /// </remarks>
+        
         [HttpPost("open")]
         [ProducesResponseType(typeof(OpenAccountResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
@@ -84,13 +73,10 @@ namespace BankMore.Accounts.Api.Controllers
             {
                 var result = await _openAccountHandler.HandleAsync(command);
 
-                // Você pode mudar o Location depois quando tiver GET por id
                 return Created(string.Empty, result);
             }
             catch (InvalidOperationException ex)
             {
-                // Aqui você pode diferenciar INVALID_DOCUMENT vs outros erros
-                // Se sua exception de CPF inválido tiver mensagem específica, dá pra mapear.
                 var errorType = ex.Message.Contains("CPF", StringComparison.OrdinalIgnoreCase)
                     ? "INVALID_DOCUMENT"
                     : "INVALID_REQUEST";
@@ -193,7 +179,6 @@ namespace BankMore.Accounts.Api.Controllers
 
         private static Guid GetContaIdFromToken(ClaimsPrincipal user)
         {
-            // você colocou accountId no token, então pegamos ele
             var accountId = user.FindFirstValue("accountId") ?? user.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrWhiteSpace(accountId) || !Guid.TryParse(accountId, out var id))
@@ -213,9 +198,6 @@ namespace BankMore.Accounts.Api.Controllers
 
     }
 
-    /// <summary>
-    /// Payload padrão de erro (para manter alinhado com o enunciado).
-    /// </summary>
     public sealed class ApiErrorResponse
     {
         public string Type { get; init; } = string.Empty;

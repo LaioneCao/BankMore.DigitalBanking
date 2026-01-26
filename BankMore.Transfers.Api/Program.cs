@@ -10,7 +10,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.WebHost.UseUrls("http://+:80");
 
 builder.Services.AddControllers();
