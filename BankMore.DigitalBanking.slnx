@@ -3,5 +3,11 @@
     <File Path="docker-compose.yml" />
   </Folder>
   <Project Path="BankMore.Accounts.Api/BankMore.Accounts.Api.csproj" Id="1405b685-c6f7-46c9-beb1-7574af43c0bd" />
+  <Project Path="BankMore.Accounts.Application/BankMore.Accounts.Application.csproj" Id="07418101-0893-461c-9b87-ea5f03d664f0" />
+  <Project Path="BankMore.Accounts.Domain/BankMore.Accounts.Domain.csproj" Id="57df5946-2085-4e38-8c4d-723c651b2bab" />
+  <Project Path="BankMore.Accounts.Infra/BankMore.Accounts.Infra.csproj" Id="267ae74b-c09c-4aa9-95dd-e063055aa500" />
   <Project Path="BankMore.Transfers.Api/BankMore.Transfers.Api.csproj" Id="4cd8a6c5-2301-44c7-a545-f8662c8240d2" />
+  <Project Path="BankMore.Transfers.Application/BankMore.Transfers.Application.csproj" Id="9a3bf593-5d2a-4ce7-8f6d-6bc9db7c025b" />
+  <Project Path="BankMore.Transfers.Domain/BankMore.Transfers.Domain.csproj" Id="d2de88ae-1846-41d0-8eae-7f0d07d8a3c6" />
+  <Project Path="BankMore.Transfers.Infra/BankMore.Transfers.Infra.csproj" Id="317c95f3-d60a-4a50-9f53-0a939c6cafea" />
 </Solution>

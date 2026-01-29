@@ -1,10 +1,10 @@
-﻿using BankMore.Accounts.Api.Application.Balance;
-using BankMore.Accounts.Api.Application.CloseAccount;
-using BankMore.Accounts.Api.Application.ListMovements;
-using BankMore.Accounts.Api.Application.Login;
-using BankMore.Accounts.Api.Application.Movements;
-using BankMore.Accounts.Api.Application.OpenAccount;
-using BankMore.Accounts.Api.Domain.Repo;
+﻿using BankMore.Accounts.Application.Balance;
+using BankMore.Accounts.Application.CloseAccount;
+using BankMore.Accounts.Application.ListMovements;
+using BankMore.Accounts.Application.Login;
+using BankMore.Accounts.Application.Movements;
+using BankMore.Accounts.Application.OpenAccount;
+using BankMore.Accounts.Domain.Repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,53 +17,13 @@ namespace BankMore.Accounts.Api.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly OpenAccountCommandHandler _openAccountHandler;
-        private readonly IContaCorrenteRepository _repository;
 
 
         public AccountsController(OpenAccountCommandHandler openAccountHandler, IContaCorrenteRepository repository)
         {
             _openAccountHandler = openAccountHandler;
-            _repository = repository;
         }
 
-        [HttpGet("list")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-        {
-            var contas = await _repository.ListAsync();
-            return Ok(contas);
-        }
-
-        [Authorize]
-        [HttpGet("movements")]
-        [ProducesResponseType(typeof(IEnumerable<MovementListItem>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ListMovements(
-    [FromQuery] int? numeroConta,
-    [FromServices] IContaCorrenteRepository contaRepo,
-    [FromServices] IMovimentoRepository movQueryRepo)
-        {
-            var contaIdLogada = GetContaIdFromToken(User);
-            var numeroLogado = GetContaNumeroFromToken(User);
-
-            // Se não enviar numeroConta -> usa conta logada
-            if (!numeroConta.HasValue)
-            {
-                var movimentos = await movQueryRepo.ListByContaIdAsync(contaIdLogada);
-                return Ok(movimentos);
-            }
-
-            if (numeroConta.Value != numeroLogado)
-                return Forbid();
-
-            var conta = await contaRepo.GetByNumeroAsync(numeroConta.Value);
-            if (conta is null)
-                return NotFound(new ApiErrorResponse { Type = "INVALID_ACCOUNT", Message = "Conta corrente inválida." });
-
-            var list = await movQueryRepo.ListByContaIdAsync(conta.Id);
-            return Ok(list);
-        }
-
-        
         [HttpPost("open")]
         [ProducesResponseType(typeof(OpenAccountResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
