@@ -1,9 +1,10 @@
 ﻿using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
+using MediatR;
 
 namespace BankMore.Accounts.Application.Commands.CloseAccount
 {
-    public sealed class CloseAccountCommandHandler
+    public sealed class CloseAccountCommandHandler : IRequestHandler<CloseAccountCommand, Unit>
     {
         private readonly IContaCorrenteRepository _repo;
         private readonly IPasswordHasher _hasher;
@@ -14,10 +15,10 @@ namespace BankMore.Accounts.Application.Commands.CloseAccount
             _hasher = hasher;
         }
 
-        public async Task HandleAsync(Guid contaId, CloseAccountCommand command)
+        public async Task<Unit> Handle(CloseAccountCommand command, CancellationToken ct)
         {
 
-            var conta = await _repo.GetByIdAsync(contaId);
+            var conta = await _repo.GetByIdAsync(command.ContaId);
             if (conta is null)
                 throw new BusinessException("Conta corrente inválida.", "INVALID_ACCOUNT");
 
@@ -25,7 +26,9 @@ namespace BankMore.Accounts.Application.Commands.CloseAccount
             if (!ok)
                 throw new UnauthorizedAccessException("Usuário não autorizado.");
 
-            await _repo.InativarAsync(contaId);
+            await _repo.InativarAsync(conta.Id);
+
+            return Unit.Value;
         }
     }
 

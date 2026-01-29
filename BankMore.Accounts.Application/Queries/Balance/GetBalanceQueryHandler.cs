@@ -1,8 +1,9 @@
 ﻿using BankMore.Accounts.Domain.Repo;
+using MediatR;
 
 namespace BankMore.Accounts.Application.Queries.Balance
 {
-    public sealed class GetBalanceQueryHandler
+    public sealed class GetBalanceQueryHandler : IRequestHandler<GetBalanceQuery, GetBalanceResult>
     {
         private readonly IContaCorrenteRepository _contaRepo;
         private readonly IBalanceQueryRepository _balanceRepo;
@@ -14,7 +15,7 @@ namespace BankMore.Accounts.Application.Queries.Balance
         }
 
        
-        public async Task<GetBalanceResult> HandleAsync(GetBalanceQuery query)
+        public async Task<GetBalanceResult> Handle(GetBalanceQuery query, CancellationToken ct)
         {
             var conta = await _contaRepo.GetByIdAsync(query.ContaId);
             if (conta is null)

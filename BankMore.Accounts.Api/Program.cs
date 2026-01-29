@@ -66,6 +66,10 @@ builder.Services.AddScoped<CloseAccountCommandHandler>();
 builder.Services.AddScoped<CreateMovementCommandHandler>();
 builder.Services.AddScoped<GetBalanceQueryHandler>();
 
+
+//MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<OpenAccountCommand>());
+
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 

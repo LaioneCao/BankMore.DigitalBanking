@@ -1,9 +1,11 @@
-﻿using BankMore.Accounts.Application.Commands.CloseAccount;
+﻿using BankMore.Accounts.Api.Contracts;
+using BankMore.Accounts.Application.Commands.CloseAccount;
 using BankMore.Accounts.Application.Commands.Login;
 using BankMore.Accounts.Application.Commands.Movements;
 using BankMore.Accounts.Application.Commands.OpenAccount;
 using BankMore.Accounts.Application.Queries.Balance;
 using BankMore.Accounts.Domain.Repo;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +17,12 @@ namespace BankMore.Accounts.Api.Controllers
     [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
-        private readonly OpenAccountCommandHandler _openAccountHandler;
+        //private readonly OpenAccountCommandHandler _openAccountHandler;
+        private readonly IMediator _mediator;
 
-
-        public AccountsController(OpenAccountCommandHandler openAccountHandler, IContaCorrenteRepository repository)
+        public AccountsController(IMediator mediator)
         {
-            _openAccountHandler = openAccountHandler;
+            _mediator = mediator;
         }
 
         [HttpPost("open")]
@@ -30,7 +32,7 @@ namespace BankMore.Accounts.Api.Controllers
         {
             try
             {
-                var result = await _openAccountHandler.HandleAsync(command);
+                var result = await _mediator.Send(command);
 
                 return Created(string.Empty, result);
             }
@@ -52,11 +54,11 @@ namespace BankMore.Accounts.Api.Controllers
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Login([FromBody] LoginCommand command, [FromServices] LoginCommandHandler handler)
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
             try
             {
-                var result = await handler.HandleAsync(command);
+                var result = await _mediator.Send(command);
                 return Ok(result);
             }
             catch (UnauthorizedAccessException ex)
@@ -74,14 +76,19 @@ namespace BankMore.Accounts.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CloseAccount(
-        [FromBody] CloseAccountCommand command,
-        [FromServices] CloseAccountCommandHandler handler)
+        public async Task<IActionResult> CloseAccount([FromBody] CloseAccountRequest request)
         {
             try
             {
                 var contaId = GetContaIdFromToken(User);
-                await handler.HandleAsync(contaId, command);
+
+                var command = new CloseAccountCommand
+                {
+                    ContaId = contaId,
+                    Senha = request.Senha
+                };
+
+                await _mediator.Send(command);
                 return NoContent();
             }
             catch (BusinessException ex)
@@ -100,15 +107,24 @@ namespace BankMore.Accounts.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMovement(
-        [FromBody] CreateMovementCommand command,
-        [FromServices] CreateMovementCommandHandler handler)
+        [FromBody] CreateMovementRequest request)
         {
             try
             {
                 var contaId = GetContaIdFromToken(User);
                 var contaNumero = GetContaNumeroFromToken(User);
 
-                await handler.HandleAsync(contaId, contaNumero, command);
+                var command = new CreateMovementCommand
+                {
+                    RequisitionId = request.RequisitionId,
+                    NumeroConta = request.NumeroConta ?? contaNumero,
+                    Valor = request.Valor,
+                    TipoMovimento = request.TipoMovimento,
+                    ContaIdLogada = contaId,
+                    NumeroContaLogada = contaNumero
+                };
+
+                await _mediator.Send(command);
                 return NoContent();
             }
             catch (BusinessException ex)
@@ -121,12 +137,12 @@ namespace BankMore.Accounts.Api.Controllers
         [HttpGet("balance")]
         [ProducesResponseType(typeof(GetBalanceResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetBalance([FromServices] GetBalanceQueryHandler handler)
+        public async Task<IActionResult> GetBalance()
         {
             try
             {
                 var contaId = GetContaIdFromToken(User);
-                var result = await handler.HandleAsync(new GetBalanceQuery { ContaId = contaId});
+                var result = await _mediator.Send(new GetBalanceQuery { ContaId = contaId});
                 return Ok(result);
             }
             catch (BusinessException ex)

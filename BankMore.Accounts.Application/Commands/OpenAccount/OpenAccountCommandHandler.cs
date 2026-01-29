@@ -1,10 +1,11 @@
-﻿using BankMore.Accounts.Domain.Entities;
+﻿using MediatR;
+using BankMore.Accounts.Domain.Entities;
 using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
 
 namespace BankMore.Accounts.Application.Commands.OpenAccount;
 
-public class OpenAccountCommandHandler
+public class OpenAccountCommandHandler : IRequestHandler<OpenAccountCommand, OpenAccountResult>
 {
     private readonly IContaCorrenteRepository _repository;
     private readonly IPasswordHasher _passwordHasher;
@@ -15,14 +16,16 @@ public class OpenAccountCommandHandler
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<OpenAccountResult> HandleAsync(OpenAccountCommand command)
+
+
+    public async Task<OpenAccountResult> Handle(OpenAccountCommand command, CancellationToken ct)
     {
         var result = _passwordHasher.Hash(command.Senha);
 
-        int numero = GerarNumeroConta();
+        int numero = Random.Shared.Next(10000, 100000);
 
         var conta = new ContaCorrente(
-            numero,
+            numero, 
             command.CPFTitular,
             command.NomeTitular,
             result.Hash,
@@ -41,8 +44,4 @@ public class OpenAccountCommandHandler
         };
     }
 
-    private static int GerarNumeroConta()
-    {
-        return Random.Shared.Next(10000, 100000);
-    }
 }

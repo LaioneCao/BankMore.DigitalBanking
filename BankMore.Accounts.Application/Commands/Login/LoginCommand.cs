@@ -1,6 +1,8 @@
-﻿namespace BankMore.Accounts.Application.Commands.Login
+﻿using MediatR;
+
+namespace BankMore.Accounts.Application.Commands.Login
 {
-    public sealed class LoginCommand
+    public sealed class LoginCommand : IRequest<LoginResult>
     {
         public string? CPFTitular { get; init; }
         public int? NumeroConta { get; init; }

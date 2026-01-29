@@ -1,9 +1,10 @@
 ﻿using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
+using MediatR;
 
 namespace BankMore.Accounts.Application.Commands.Login
 {
-    public sealed class LoginCommandHandler
+    public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
     {
         private readonly IContaCorrenteRepository _repo;
         private readonly IPasswordHasher _hasher;
@@ -16,7 +17,7 @@ namespace BankMore.Accounts.Application.Commands.Login
             _jwt = jwt;
         }
 
-        public async Task<LoginResult> HandleAsync(LoginCommand command)
+        public async Task<LoginResult> Handle(LoginCommand command, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(command.Senha))
                 throw new UnauthorizedAccessException("Credenciais inválidas.");

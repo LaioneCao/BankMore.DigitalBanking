@@ -1,6 +1,8 @@
-﻿namespace BankMore.Accounts.Application.Commands.OpenAccount
+﻿using MediatR;
+
+namespace BankMore.Accounts.Application.Commands.OpenAccount
 {
-    public class OpenAccountCommand
+    public class OpenAccountCommand : IRequest<OpenAccountResult>
     {
         public string NomeTitular { get; init; } = string.Empty;
         public string CPFTitular { get; init; } = string.Empty;

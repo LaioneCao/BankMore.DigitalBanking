@@ -1,10 +1,11 @@
 ﻿using BankMore.Accounts.Domain.Entities;
 using BankMore.Accounts.Domain.Repo;
+using MediatR;
 using System.Text.Json;
 
 namespace BankMore.Accounts.Application.Commands.Movements
 {
-    public sealed class CreateMovementCommandHandler
+    public sealed class CreateMovementCommandHandler : IRequestHandler<CreateMovementCommand, Unit>
     {
         private readonly IContaCorrenteRepository _contaRepo;
         private readonly IMovimentoRepository _movRepo;
@@ -20,13 +21,13 @@ namespace BankMore.Accounts.Application.Commands.Movements
             _idemRepo = idemRepo;
         }
 
-        public async Task HandleAsync(Guid contaLogadaId, int contaLogadaNumero, CreateMovementCommand command)
+        public async Task<Unit> Handle(CreateMovementCommand command, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(command.RequisitionId))
                 throw new BusinessException("Identificação da requisição é obrigatória.", "INVALID_VALUE");
 
             if (await _idemRepo.ExistsAsync(command.RequisitionId))
-                return;
+                return Unit.Value;
 
             Guid contaAlvoId;
             int contaAlvoNumero;
@@ -42,8 +43,8 @@ namespace BankMore.Accounts.Application.Commands.Movements
             }
             else
             {
-                contaAlvoId = contaLogadaId;
-                contaAlvoNumero = contaLogadaNumero;
+                contaAlvoId = command.ContaIdLogada;
+                contaAlvoNumero = command.NumeroContaLogada;
             }
 
             // Validações
@@ -54,11 +55,11 @@ namespace BankMore.Accounts.Application.Commands.Movements
             if (tipo is not ("C" or "D"))
                 throw new BusinessException("Tipo de movimento inválido. Use 'C' ou 'D'.", "INVALID_TYPE");
 
-            if (contaAlvoNumero != contaLogadaNumero && tipo != "C")
+            if (contaAlvoNumero != command.NumeroContaLogada && tipo != "C")
                 throw new BusinessException("Apenas crédito é permitido para movimentação em conta diferente do usuário logado.", "INVALID_TYPE");
 
-            var contaParaStatus = contaAlvoNumero == contaLogadaNumero
-                ? await _contaRepo.GetByIdAsync(contaLogadaId)
+            var contaParaStatus = contaAlvoNumero == command.NumeroContaLogada
+                ? await _contaRepo.GetByIdAsync(command.ContaIdLogada)
                 : await _contaRepo.GetByNumeroAsync(contaAlvoNumero);
 
             if (contaParaStatus is null)
@@ -73,6 +74,8 @@ namespace BankMore.Accounts.Application.Commands.Movements
 
             var reqJson = JsonSerializer.Serialize(command);
             await _idemRepo.SaveAsync(command.RequisitionId, reqJson, "NO_CONTENT");
+
+            return Unit.Value;
         }
     }
 }
