@@ -1,4 +1,6 @@
-﻿using BankMore.Transfers.Application.Commands.CreateTransfer;
+﻿using BankMore.Transfers.Api.Contracts;
+using BankMore.Transfers.Application.Commands.CreateTransfer;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,20 +13,35 @@ namespace BankMore.Transfers.Api.Controllers
     [Route("api/transfers")]
     public sealed class TransfersController : ControllerBase
     {
+        private readonly IMediator _mediator;
+
+        public TransfersController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(
-            [FromBody] CreateTransferCommand command,
-            [FromServices] CreateTransferCommandHandler handler)
+            [FromBody] CreateTransferRequest request)
         {
             try
             {
                 var contaId = Guid.Parse(User.FindFirstValue("accountId")!);
                 var token = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 
-                await handler.HandleAsync(contaId, token, command);
+                var command = new CreateTransferCommand
+                {
+                    RequisitionId = request.RequisitionId,
+                    NumeroContaDestino = request.NumeroContaDestino,
+                    Valor = request.Valor,
+                    ContaOrigemId = contaId,
+                    BearerToken = token
+                };
+
+                await _mediator.Send(command);
                 return NoContent();
             }
             catch (BusinessException ex)
