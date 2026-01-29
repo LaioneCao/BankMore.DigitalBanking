@@ -1,4 +1,3 @@
-using BankMore.Transfers.Application.CreateTransfer;
 using BankMore.Transfers.Domain.Repo;
 using BankMore.Transfers.Infra;
 using BankMore.Transfers.Infra.Clients;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BankMore.Transfers.Domain.Services;
+using BankMore.Transfers.Application.Commands.CreateTransfer;
 
 var builder = WebApplication.CreateBuilder(args);
 

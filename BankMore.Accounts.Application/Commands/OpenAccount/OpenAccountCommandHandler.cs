@@ -1,9 +1,8 @@
-﻿using BankMore.Accounts.Application.OpenAccount;
-using BankMore.Accounts.Domain.Entities;
+﻿using BankMore.Accounts.Domain.Entities;
 using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
 
-namespace BankMore.Accounts.Application.OpenAccount;
+namespace BankMore.Accounts.Application.Commands.OpenAccount;
 
 public class OpenAccountCommandHandler
 {

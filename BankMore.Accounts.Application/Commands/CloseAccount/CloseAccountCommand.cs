@@ -1,4 +1,4 @@
-﻿namespace BankMore.Accounts.Application.CloseAccount
+﻿namespace BankMore.Accounts.Application.Commands.CloseAccount
 {
 
     public sealed class CloseAccountCommand

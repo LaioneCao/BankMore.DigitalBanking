@@ -2,7 +2,7 @@
 using BankMore.Transfers.Domain.Services;
 using System.Text.Json;
 
-namespace BankMore.Transfers.Application.CreateTransfer
+namespace BankMore.Transfers.Application.Commands.CreateTransfer
 {
     public sealed class CreateTransferCommandHandler
     {
@@ -35,17 +35,20 @@ namespace BankMore.Transfers.Application.CreateTransfer
                 throw new BusinessException("Conta destino inválida.", "INVALID_ACCOUNT");
 
             // 1) débito
-            await _accounts.DebitAsync(bearerToken, command.RequisitionId, command.Valor);
+            var debitId = $"{command.RequisitionId}-DEBIT";
+            await _accounts.DebitAsync(bearerToken, debitId, command.Valor);
 
             try
             {
                 // 2) crédito destino
-                await _accounts.CreditAsync(bearerToken, command.RequisitionId, command.NumeroContaDestino, command.Valor);
+                var creditId = $"{command.RequisitionId}-CREDIT";
+                await _accounts.CreditAsync(bearerToken, creditId, command.NumeroContaDestino, command.Valor);
             }
             catch
             {
                 // 3) estorno (crédito na origem)
-                await _accounts.CreditSelfAsync(bearerToken, command.RequisitionId + "-REVERSAL", command.Valor);
+                var creditSelfId = $"{command.RequisitionId}-CREDITSELF";
+                await _accounts.CreditSelfAsync(bearerToken, creditSelfId, command.Valor);
                 throw;
             }
 

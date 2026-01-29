@@ -1,4 +1,4 @@
-﻿namespace BankMore.Accounts.Application.OpenAccount
+﻿namespace BankMore.Accounts.Application.Commands.OpenAccount
 {
     public class OpenAccountCommand
     {

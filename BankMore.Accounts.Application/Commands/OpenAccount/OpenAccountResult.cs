@@ -1,11 +1,12 @@
-﻿namespace BankMore.Accounts.Application.ListAccounts
+﻿namespace BankMore.Accounts.Application.Commands.OpenAccount
 {
-    public sealed class AccountListItem
+
+    public class OpenAccountResult
     {
         public Guid ContaId { get; init; }
         public int NumeroConta { get; init; }
-        public string CPFTitular { get; init; } = string.Empty;
         public string NomeTitular { get; init; } = string.Empty;
+        public string CPFTitular { get; init; } = string.Empty;
         public bool Ativa { get; init; }
     }
 }

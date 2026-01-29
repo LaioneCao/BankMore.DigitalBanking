@@ -1,6 +1,6 @@
 ﻿using BankMore.Accounts.Domain.Repo;
 
-namespace BankMore.Accounts.Application.Balance
+namespace BankMore.Accounts.Application.Queries.Balance
 {
     public sealed class GetBalanceQueryHandler
     {
@@ -13,16 +13,17 @@ namespace BankMore.Accounts.Application.Balance
             _balanceRepo = balanceRepo;
         }
 
-        public async Task<GetBalanceResult> HandleAsync(Guid contaId)
+       
+        public async Task<GetBalanceResult> HandleAsync(GetBalanceQuery query)
         {
-            var conta = await _contaRepo.GetByIdAsync(contaId);
+            var conta = await _contaRepo.GetByIdAsync(query.ContaId);
             if (conta is null)
                 throw new BusinessException("Conta corrente inválida.", "INVALID_ACCOUNT");
 
             if (!conta.Ativa)
                 throw new BusinessException("Conta corrente inativa.", "INACTIVE_ACCOUNT");
 
-            var saldo = await _balanceRepo.GetSaldoAsync(contaId);
+            var saldo = await _balanceRepo.GetSaldoAsync(query.ContaId);
 
             return new GetBalanceResult
             {

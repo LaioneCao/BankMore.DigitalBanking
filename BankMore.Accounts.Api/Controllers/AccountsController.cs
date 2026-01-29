@@ -1,9 +1,8 @@
-﻿using BankMore.Accounts.Application.Balance;
-using BankMore.Accounts.Application.CloseAccount;
-using BankMore.Accounts.Application.ListMovements;
-using BankMore.Accounts.Application.Login;
-using BankMore.Accounts.Application.Movements;
-using BankMore.Accounts.Application.OpenAccount;
+﻿using BankMore.Accounts.Application.Commands.CloseAccount;
+using BankMore.Accounts.Application.Commands.Login;
+using BankMore.Accounts.Application.Commands.Movements;
+using BankMore.Accounts.Application.Commands.OpenAccount;
+using BankMore.Accounts.Application.Queries.Balance;
 using BankMore.Accounts.Domain.Repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -127,7 +126,7 @@ namespace BankMore.Accounts.Api.Controllers
             try
             {
                 var contaId = GetContaIdFromToken(User);
-                var result = await handler.HandleAsync(contaId);
+                var result = await handler.HandleAsync(new GetBalanceQuery { ContaId = contaId});
                 return Ok(result);
             }
             catch (BusinessException ex)

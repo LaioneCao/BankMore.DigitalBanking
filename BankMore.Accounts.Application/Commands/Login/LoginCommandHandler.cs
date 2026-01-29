@@ -1,7 +1,7 @@
 ﻿using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
 
-namespace BankMore.Accounts.Application.Login
+namespace BankMore.Accounts.Application.Commands.Login
 {
     public sealed class LoginCommandHandler
     {

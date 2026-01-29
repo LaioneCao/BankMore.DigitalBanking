@@ -1,4 +1,4 @@
-﻿namespace BankMore.Accounts.Application.Balance
+﻿namespace BankMore.Accounts.Application.Queries.Balance
 {
     public sealed class GetBalanceResult
     {

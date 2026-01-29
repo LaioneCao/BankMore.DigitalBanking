@@ -1,7 +1,7 @@
 ﻿using BankMore.Accounts.Domain.Repo;
 using BankMore.Accounts.Domain.Services;
 
-namespace BankMore.Accounts.Application.CloseAccount
+namespace BankMore.Accounts.Application.Commands.CloseAccount
 {
     public sealed class CloseAccountCommandHandler
     {

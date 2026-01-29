@@ -1,4 +1,4 @@
-﻿using BankMore.Transfers.Api.Application.CreateTransfer;
+﻿using BankMore.Transfers.Application.Commands.CreateTransfer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

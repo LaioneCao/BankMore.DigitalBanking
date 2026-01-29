@@ -1,4 +1,4 @@
-﻿namespace BankMore.Accounts.Application.Movements
+﻿namespace BankMore.Accounts.Application.Commands.Movements
 {
     public sealed class CreateMovementCommand
     {

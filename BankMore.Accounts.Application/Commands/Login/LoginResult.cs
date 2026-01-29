@@ -1,4 +1,4 @@
-﻿namespace BankMore.Accounts.Application.Login
+﻿namespace BankMore.Accounts.Application.Commands.Login
 {
     public sealed class LoginResult
     {
