@@ -1,31 +1,45 @@
 version: "3.8"
 
 services:
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-
   accounts.api:
     build:
-      context: ./BankMore.Accounts.Api
+      context: .
+      dockerfile: BankMore.Accounts.Api/Dockerfile
     container_name: accounts.api
     ports:
       - "5001:80"
-    depends_on:
-      - rabbitmq
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__Default: "Data Source=accounts.db"
+      Jwt__Issuer: "BankMore"
+      Jwt__Audience: "BankMore"
+      Jwt__Key: "XnJwItUcwsIJoVGn8Q261By26UaAPezn"
+      Jwt__ExpMinutes: "60"
+    volumes:
+      - accounts_data:/data
 
   transfers.api:
     build:
-      context: ./BankMore.Transfers.Api
+      context: .
+      dockerfile: BankMore.Transfers.Api/Dockerfile
     container_name: transfers.api
     ports:
       - "5002:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__Default: "Data Source=transfers.db"
+      AccountsApi__BaseUrl: "http://accounts.api" 
+      Jwt__Issuer: "BankMore"
+      Jwt__Audience: "BankMore"
+      Jwt__Key: "XnJwItUcwsIJoVGn8Q261By26UaAPezn"
+      Jwt__ExpMinutes: "60"
+    volumes:
+      - transfers_data:/data
     depends_on:
-      - rabbitmq
+      - accounts.api
+
+volumes:
+  accounts_data:
+  transfers_data:
