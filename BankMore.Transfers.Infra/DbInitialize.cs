@@ -1,6 +1,7 @@
 ﻿using Dapper;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace BankMore.Transfers.Api.Infra
+namespace BankMore.Transfers.Infra
 {
     public static class DbInitialize
     {

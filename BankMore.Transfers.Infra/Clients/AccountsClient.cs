@@ -1,17 +1,12 @@
-﻿using System.Net.Http.Headers;
+﻿using BankMore.Transfers.Domain.Services;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace BankMore.Transfers.Api.Infra.Clients
+namespace BankMore.Transfers.Infra.Clients
 {
 
-    public interface IAccountsClient
-    {
-        Task DebitAsync(string token, string requisitionId, decimal valor);
-        Task CreditAsync(string token, string requisitionId, int numeroContaDestino, decimal valor);
-        Task CreditSelfAsync(string token, string requisitionId, decimal valor);
-    }
-
+   
     public sealed class AccountsClient : IAccountsClient
     {
         private readonly HttpClient _http;

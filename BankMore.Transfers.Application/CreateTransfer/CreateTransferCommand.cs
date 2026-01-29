@@ -1,4 +1,4 @@
-﻿namespace BankMore.Transfers.Api.Application.CreateTransfer
+﻿namespace BankMore.Transfers.Application.CreateTransfer
 {
     public sealed class CreateTransferCommand
     {

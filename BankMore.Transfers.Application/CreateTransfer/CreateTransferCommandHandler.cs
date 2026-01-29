@@ -1,8 +1,8 @@
-﻿using BankMore.Transfers.Api.Domain.Repo;
-using BankMore.Transfers.Api.Infra.Clients;
+﻿using BankMore.Transfers.Domain.Repo;
+using BankMore.Transfers.Domain.Services;
 using System.Text.Json;
 
-namespace BankMore.Transfers.Api.Application.CreateTransfer
+namespace BankMore.Transfers.Application.CreateTransfer
 {
     public sealed class CreateTransferCommandHandler
     {

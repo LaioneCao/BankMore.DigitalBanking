@@ -1,12 +1,13 @@
-using BankMore.Transfers.Api.Application.CreateTransfer;
-using BankMore.Transfers.Api.Domain.Repo;
-using BankMore.Transfers.Api.Infra;
-using BankMore.Transfers.Api.Infra.Clients;
-using BankMore.Transfers.Api.Infra.Repo;
+using BankMore.Transfers.Application.CreateTransfer;
+using BankMore.Transfers.Domain.Repo;
+using BankMore.Transfers.Infra;
+using BankMore.Transfers.Infra.Clients;
+using BankMore.Transfers.Infra.Repo;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BankMore.Transfers.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

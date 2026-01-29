@@ -1,7 +1,7 @@
-﻿using BankMore.Transfers.Api.Domain.Repo;
+﻿using BankMore.Transfers.Domain.Repo;
 using Dapper;
 
-namespace BankMore.Transfers.Api.Infra.Repo
+namespace BankMore.Transfers.Infra.Repo
 {
     public sealed class IdempotenciaRepository : IIdempotenciaRepository
     {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace BankMore.Transfers.Api.Infra
+namespace BankMore.Transfers.Infra
 {
     public interface IDbConnectionFactory
     {

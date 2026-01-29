@@ -1,4 +1,4 @@
-﻿namespace BankMore.Transfers.Api.Domain.Repo
+﻿namespace BankMore.Transfers.Domain.Repo
 {
     public interface ITransferenciaRepository
     {
